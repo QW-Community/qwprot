@@ -250,7 +250,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif // MVD_PEXT1_SIMPLEPROJECTILE
 
 #ifdef MVD_PEXT1_SPRAYS
-# define svc_spray			102		// chunked square RGBA spray image + world placement
+# define svc_spray			102		// chunked RGBA spray image + world placement
 #endif // MVD_PEXT1_SPRAYS
 
 //==============================================
@@ -266,7 +266,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define clc_upload		7		// teleport request, spectator only
 
 #ifdef MVD_PEXT1_SPRAYS
-# define clc_spray			8		// chunked square RGBA spray image + world placement
+# define clc_spray			8		// chunked RGBA spray image + world placement
 
 # define spraynet_begin		0
 # define spraynet_pixels	1
@@ -276,8 +276,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 # define spraynet_clear_one	5
 # define spraynet_accept_need_pixels 1
 # define spraynet_hash_bytes	8
-# define spraynet_max_width	64
-# define spraynet_max_height	64
+# define spraynet_max_width	128
+# define spraynet_max_height	128
 # define spraynet_bpp		4
 # define spraynet_max_bytes	(spraynet_max_width * spraynet_max_height * spraynet_bpp)
 # define spraynet_chunk_bytes	1024

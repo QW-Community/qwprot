@@ -274,6 +274,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 # define spraynet_deny		3
 # define spraynet_clear_all	4
 # define spraynet_clear_one	5
+# define spraynet_begin_silent	6
 # define spraynet_accept_need_pixels 1
 # define spraynet_hash_bytes	8
 # define spraynet_max_width	128

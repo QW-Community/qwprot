@@ -70,6 +70,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 # define	MVD_PEXT1_WEAPONPREDICTION	(1 <<  7) // Weapon prediction
 # define	MVD_PEXT1_SIMPLEPROJECTILE	(1 <<  8) // Simple projectiles
 # define	MVD_PEXT1_SPRAYS			(1 <<  9) // Raw RGBA decal sprays
+# define	MVD_PEXT1_EZCSQC			(1 << 10) // Native EZCSQC weapon/projectile prediction payloads
 
 # if defined(MVD_PEXT1_DEBUG_ANTILAG) || defined(MVD_PEXT1_DEBUG_WEAPON)
 #  define MVD_PEXT1_DEBUG

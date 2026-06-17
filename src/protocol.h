@@ -239,6 +239,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef FTE_PEXT_CSQC
 #define svc_fte_csqcentities	76
 #endif
+#ifdef MVD_PEXT1_EZCSQC
+#define svc_ezcsqc_setup		77	// Native EZCSQC reliable setup payloads
+#endif
 #define svc_qizmovoice			83
 
 #ifdef FTE_PEXT2_VOICECHAT

@@ -245,7 +245,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef MVD_PEXT1_EZCSQC
 #define svc_ezcsqc_setup		77	// Native EZCSQC reliable setup payloads
 #endif
-#define svc_qizmovoice			85	// moved off 83 to free it for svc_fte_cgamepacket
+#define svc_qizmovoice			83
 
 #ifdef FTE_PEXT2_VOICECHAT
 # define svc_fte_voicechat		84

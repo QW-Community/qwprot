@@ -31,10 +31,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define PROTOCOL_VERSION_MVD1   (('M'<<0) + ('V'<<8) + ('D'<<16) + ('1' << 24)) //mvdsv extensions
 
 #ifdef PROTOCOL_VERSION_FTE 
+//# define FTE_PEXT_SCALE			0x00000002	// .scale support, not enabled by default,
+//												// define it from the build to use it.
 # define FTE_PEXT_TRANS				0x00000008	// .alpha support
 # define FTE_PEXT_ACCURATETIMINGS	0x00000040  // qqshka: not actually used in ezquake.
 //												// I added it to ezquake in hope that someone made some
 //												// rockets(enitities) smoothing code...
+# define FTE_PEXT_SOUNDDBL			0x00000080	// extended sound indices and soundlist cursors
 # define FTE_PEXT_HLBSP				0x00000200	// stops fte servers from complaining
 # define FTE_PEXT_MODELDBL			0x00001000  //
 # define FTE_PEXT_ENTITYDBL			0x00002000	// max of 1024 ents instead of 512
@@ -231,6 +234,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define svc_updatepl			53		// [byte] [byte]
 #define svc_nails2				54		// [byte] num [52 bits] nxyzpy 8 12 12 12 4 8
 										// mvdsv extended svcs (for mvd playback)
+#ifdef FTE_PEXT_SOUNDDBL
+# define svc_fte_soundextended	55	// [byte flags] [optional volume/attenuation] [short entity/channel] [byte/short sound] [coords]
+# define svc_fte_soundlistshort	56	// [short cursor] [strings] [byte 0] [byte continuation]
+#endif // FTE_PEXT_SOUNDDBL
 #ifdef FTE_PEXT_MODELDBL
 # define	svc_fte_modellistshort	60	// [strings]
 #endif // FTE_PEXT_MODELDBL
@@ -238,6 +245,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define svc_fte_spawnbaseline2	66
 #ifdef FTE_PEXT_CSQC
 #define svc_fte_csqcentities	76
+#define svc_fte_updatestatstring	78	// [byte statnum] [string]
+#define svc_fte_updatestatfloat	79	// [byte statnum] [float]
+#define svc_fte_cgamepacket		83	// ssqc->csqc game packets, only via multicast
+#define svc_fte_cgamepacket_sized	90	// svc_fte_cgamepacket with a short length prefix (sv_csqcdebug)
+#define svc_fte_csqcentities_sized	92	// as svc_fte_csqcentities, with a length prefix per update (sv_csqcdebug)
 #endif
 #ifdef MVD_PEXT1_EZCSQC
 #define svc_ezcsqc_setup		77	// Native EZCSQC reliable setup payloads
@@ -291,6 +303,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef MVD_PEXT1_SIMPLEPROJECTILE
 # define clc_ackframe	50
 #endif // MVD_PEXT1_SIMPLEPROJECTILE
+
+#ifdef FTE_PEXT_CSQC
+#define clcfte_qcrequest	81	// CSQC sendevent (client -> server)
+#endif
 
 #ifdef FTE_PEXT2_VOICECHAT
 #define clc_voicechat	83		// FTE voice chat.
@@ -405,10 +421,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 # define U_FTE_EVENMORE	(1<<7)		//extension info follows
 # ifdef FTE_PEXT_SCALE
 #  define U_FTE_SCALE		(1<<0)	//scaler of alias models
+#  define PF_SCALE		(1<<16)	//extra playerflags byte, scale*50 follows
 # endif // FTE_PEXT_SCALE
 # ifdef FTE_PEXT_TRANS
 #  define U_FTE_TRANS		(1<<1)	//transparency value
-#  define	PF_EXTRA_PFS	(1<<15)	//TRANS requires extra playerflags
+#  define	PF_EXTRA_PFS	(1<<15)	//TRANS/SCALE require extra playerflags
 #  define	PF_TRANS_Z		(1<<17)
 # endif // FTE_PEXT_TRANS
 # ifdef FTE_PEXT_FATNESS
@@ -454,6 +471,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // the sound field has bits 0-2: channel, 3-12: entity
 #define	SND_VOLUME		(1 << 15)		// a byte
 #define	SND_ATTENUATION	(1 << 14)		// a byte
+
+// svc_fte_soundextended uses a separate flags byte, not QW's packed flags.
+#ifdef FTE_PEXT_SOUNDDBL
+# define NQSND_VOLUME		(1 << 0)	// a byte
+# define NQSND_ATTENUATION	(1 << 1)	// a byte
+# define NQSND_LARGESOUND	(1 << 4)	// sound index is a short instead of a byte
+#endif
 
 #define DEFAULT_SOUND_PACKET_VOLUME			255
 #define DEFAULT_SOUND_PACKET_ATTENUATION	1.0
@@ -518,6 +542,9 @@ typedef struct entity_state_s {
 	int		colormap;
 	int		skinnum;
 	int		effects;
+#ifdef FTE_PEXT_SCALE
+	byte		scale;		// 1/16 units, 0 = unset (unscaled)
+#endif
 #ifdef FTE_PEXT_TRANS
 	byte		trans;
 #endif
